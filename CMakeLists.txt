@@ -9,7 +9,10 @@ endif()
 option(MD_BUILD_TESTS "Build motorDynamics tests" ${MD_IS_TOPLEVEL})
 option(MD_ENABLE_SANITIZERS "Enable AddressSanitizer and UndefinedBehaviorSanitizer" OFF)
 
-add_library(motor_dynamics STATIC src/dc_motor.c)
+add_library(motor_dynamics STATIC
+    src/bldc_motor.c
+    src/dc_motor.c
+)
 add_library(motorDynamics::motor_dynamics ALIAS motor_dynamics)
 
 target_include_directories(motor_dynamics
@@ -40,10 +43,25 @@ if(MD_BUILD_TESTS)
     )
     add_test(NAME motor_dynamics_tests COMMAND motor_dynamics_tests)
 
+    add_executable(bldc_motor_tests tests/test_bldc_motor.c)
+    target_link_libraries(bldc_motor_tests PRIVATE
+        motorDynamics::motor_dynamics)
+    target_compile_options(bldc_motor_tests PRIVATE
+        $<$<C_COMPILER_ID:GNU,Clang>:-Wall;-Wextra;-Wpedantic;-Werror>
+    )
+    add_test(NAME bldc_motor_tests COMMAND bldc_motor_tests)
+
     add_executable(dc_motor_trace tests/reference/dc_motor_trace.c)
     target_link_libraries(dc_motor_trace PRIVATE
         motorDynamics::motor_dynamics)
     target_compile_options(dc_motor_trace PRIVATE
+        $<$<C_COMPILER_ID:GNU,Clang>:-Wall;-Wextra;-Wpedantic;-Werror>
+    )
+
+    add_executable(bldc_motor_trace tests/reference/bldc_motor_trace.c)
+    target_link_libraries(bldc_motor_trace PRIVATE
+        motorDynamics::motor_dynamics)
+    target_compile_options(bldc_motor_trace PRIVATE
         $<$<C_COMPILER_ID:GNU,Clang>:-Wall;-Wextra;-Wpedantic;-Werror>
     )
 
@@ -56,6 +74,14 @@ if(MD_BUILD_TESTS)
                     python
                     ${CMAKE_CURRENT_SOURCE_DIR}/tests/reference/test_scipy_dc_motor.py
                     --trace $<TARGET_FILE:dc_motor_trace>
+        )
+        add_test(
+            NAME scipy_bldc_motor_parity
+            COMMAND ${UV_EXECUTABLE} run --isolated --no-project
+                    --with numpy>=2,<3 --with scipy>=1.14,<2
+                    python
+                    ${CMAKE_CURRENT_SOURCE_DIR}/tests/reference/test_scipy_bldc_motor.py
+                    --trace $<TARGET_FILE:bldc_motor_trace>
         )
     endif()
 endif()

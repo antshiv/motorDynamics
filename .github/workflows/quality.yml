@@ -39,4 +39,4 @@ jobs:
         run: |
           cmake --build build/sanitize --parallel
           ./build/sanitize/motor_dynamics_tests
-
+          ./build/sanitize/bldc_motor_tests
