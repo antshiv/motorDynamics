@@ -1,0 +1,42 @@
+name: Numerical quality gates
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  strict-and-oracle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+      - name: Configure strict C build
+        run: cmake -S . -B build/strict -DCMAKE_BUILD_TYPE=Debug
+      - name: Build and test
+        run: |
+          cmake --build build/strict --parallel
+          ctest --test-dir build/strict --output-on-failure
+
+  sanitizers:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure instrumented C build
+        run: |
+          cmake -S . -B build/sanitize \
+            -DCMAKE_BUILD_TYPE=Debug \
+            -DMD_ENABLE_SANITIZERS=ON
+      - name: Build and run native fixtures
+        env:
+          ASAN_OPTIONS: detect_leaks=1
+          UBSAN_OPTIONS: print_stacktrace=1:halt_on_error=1
+        run: |
+          cmake --build build/sanitize --parallel
+          ./build/sanitize/motor_dynamics_tests
+
