@@ -76,8 +76,9 @@ static void test_power_observation(void) {
     assert_close(observation.electromagnetic_torque_nm, 0.4, 1e-12);
     assert_close(observation.back_emf_v, 4.0, 1e-12);
     assert_close(observation.electrical_power_w, 48.0, 1e-12);
-    assert_close(observation.shaft_power_w, 16.0, 1e-12);
+    assert_close(observation.electromagnetic_power_w, 16.0, 1e-12);
     assert_close(observation.copper_loss_w, 32.0, 1e-12);
+    assert_close(observation.viscous_loss_w, 32.0, 1e-12);
 }
 
 static void test_fail_closed_contract(void) {

@@ -45,8 +45,9 @@ typedef struct {
     double electromagnetic_torque_nm;
     double back_emf_v;
     double electrical_power_w;
-    double shaft_power_w;
+    double electromagnetic_power_w;
     double copper_loss_w;
+    double viscous_loss_w;
 } md_dc_motor_observation_t;
 
 md_status_t md_dc_motor_config_validate(const md_dc_motor_config_t *config);
@@ -85,4 +86,3 @@ const char *md_status_string(md_status_t status);
 #endif
 
 #endif
-

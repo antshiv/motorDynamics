@@ -236,17 +236,21 @@ md_status_t md_dc_motor_observe(
         config->back_emf_v_per_rad_s * state->angular_speed_rad_s;
     observation->electrical_power_w =
         input->terminal_voltage_v * state->current_a;
-    observation->shaft_power_w =
+    observation->electromagnetic_power_w =
         observation->electromagnetic_torque_nm *
         state->angular_speed_rad_s;
     observation->copper_loss_w =
         config->resistance_ohm * state->current_a * state->current_a;
+    observation->viscous_loss_w =
+        config->viscous_friction_nm_per_rad_s *
+        state->angular_speed_rad_s * state->angular_speed_rad_s;
 
     if (!isfinite(observation->electromagnetic_torque_nm) ||
         !isfinite(observation->back_emf_v) ||
         !isfinite(observation->electrical_power_w) ||
-        !isfinite(observation->shaft_power_w) ||
-        !isfinite(observation->copper_loss_w)) {
+        !isfinite(observation->electromagnetic_power_w) ||
+        !isfinite(observation->copper_loss_w) ||
+        !isfinite(observation->viscous_loss_w)) {
         memset(observation, 0, sizeof(*observation));
         return MD_STATUS_NUMERICAL_FAILURE;
     }
@@ -271,4 +275,3 @@ const char *md_status_string(md_status_t status) {
             return "unknown status";
     }
 }
-
