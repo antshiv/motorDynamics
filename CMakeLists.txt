@@ -1,7 +1,12 @@
 cmake_minimum_required(VERSION 3.16)
 project(motor_dynamics VERSION 0.1.0 LANGUAGES C)
 
-option(MD_BUILD_TESTS "Build motorDynamics tests" ON)
+set(MD_IS_TOPLEVEL OFF)
+if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+    set(MD_IS_TOPLEVEL ON)
+endif()
+
+option(MD_BUILD_TESTS "Build motorDynamics tests" ${MD_IS_TOPLEVEL})
 option(MD_ENABLE_SANITIZERS "Enable AddressSanitizer and UndefinedBehaviorSanitizer" OFF)
 
 add_library(motor_dynamics STATIC src/dc_motor.c)
@@ -54,4 +59,3 @@ if(MD_BUILD_TESTS)
         )
     endif()
 endif()
-
