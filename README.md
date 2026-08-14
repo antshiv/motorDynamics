@@ -1,9 +1,10 @@
 # motorDynamics
 
 Pure-C electric-motor plant models and control foundations for Antshiv
-Robotics. The library starts with an armature-controlled brushed DC motor so
-the electrical, mechanical, numerical, and ABI contracts can be validated
-before adding BLDC/PMSM commutation and inverter models.
+Robotics. A brushed DC model establishes the simplest electrical/mechanical
+reference. The first BLDC model exposes three phase currents, trapezoidal
+back-EMF, electrical angle, electromagnetic torque, and averaged six-step
+inverter voltage vectors.
 
 ## Accepted model
 
@@ -18,6 +19,18 @@ dtheta/dt = omega
 All public values use SI units. Checked calls reject invalid configurations,
 clear derivative outputs on failure, and leave state unchanged when an RK4
 stage fails.
+
+The BLDC plant evaluates a wye-connected three-phase machine:
+
+```text
+L di_p/dt = v_p - v_neutral - R i_p - e_p(theta_e, omega)
+theta_e = pole_pairs * theta_m
+J domega/dt = torque_e(i_a, i_b, i_c, theta_e) - b omega - torque_load
+```
+
+The neutral potential is solved each evaluation so a valid zero-sum phase
+current remains zero-sum. Inverter voltage generation is separate from the
+machine equations.
 
 ## Build and validate
 
@@ -43,8 +56,8 @@ same transient is compared with an independently integrated SciPy oracle.
 ## Planned progression
 
 1. Brushed DC motor parameter identification and current/voltage limits.
-2. Three-phase inverter and six-step BLDC commutation.
+2. Replace the accepted averaged six-step vectors with switching/dead-time and
+   current-limit models.
 3. Clarke/Park transforms and PMSM field-oriented control.
 4. Hall, encoder, and sensorless observers.
 5. Coupled motor-propeller and battery-bus fixtures.
-
