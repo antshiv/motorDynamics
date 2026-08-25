@@ -12,6 +12,11 @@ latched faults. Hardware-specific PWM, ADC, SPI, and timer code remains outside
 the numerical library so the same contract can target KV31F, KV58, and i.MX
 RT1176 adapters.
 
+`include/motor/hal/` defines the hardware ABI shared by those adapters. It
+accepts validated phase commands and reports timestamped voltage, current,
+BEMF, commutation, pre-driver status, and generic fault evidence. Invalid
+commands and adapter failures force the bridge back to its safe state.
+
 ## Accepted model
 
 The first model integrates current, shaft speed, and shaft angle:

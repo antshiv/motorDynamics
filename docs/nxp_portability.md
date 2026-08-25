@@ -30,6 +30,18 @@ The RT1176 reference uses PMSM field-oriented control. Its peripheral and
 GD3000 integration are useful, but they do not replace the sensorless six-step
 observer needed for ordinary RC outrunners.
 
+The adapter implements `include/motor/hal/motor_hal.h`. This ABI is deliberately
+pre-driver-neutral: GD3000 status bits are translated into generic gate-driver,
+current, voltage, temperature, communication, watchdog, and ADC-timing faults.
+A future pre-driver can therefore replace GD3000 without changing the portable
+controller or the flight-controller command boundary.
+
+The KV31F adapter should use the official MCUXpresso SDK for CMSIS startup,
+linker scripts, clocks, pins, FTM/PWM, ADC/PDB, DSPI, and interrupt support.
+NXP application-note code remains reference material rather than portable-core
+source. The adapter must initialize every bridge output inactive and prove
+GD3000 communication and fault readback before accepting an enabled command.
+
 ## Current acceptance boundary
 
 The first portable implementation owns the six commutation patterns,

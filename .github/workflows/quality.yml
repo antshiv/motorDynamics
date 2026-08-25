@@ -41,6 +41,7 @@ jobs:
           ./build/sanitize/motor_dynamics_tests
           ./build/sanitize/bldc_motor_tests
           ./build/sanitize/six_step_controller_tests
+          ./build/sanitize/motor_hal_tests
 
   cortex-m4-compile:
     runs-on: ubuntu-latest

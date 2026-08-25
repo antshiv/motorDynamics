@@ -271,6 +271,8 @@ const char *md_status_string(md_status_t status) {
             return "numerical failure";
         case MD_STATUS_SINGULAR_MODEL:
             return "singular model";
+        case MD_STATUS_HARDWARE_FAILURE:
+            return "hardware failure";
         default:
             return "unknown status";
     }

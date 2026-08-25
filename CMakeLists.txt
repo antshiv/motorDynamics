@@ -12,6 +12,7 @@ option(MD_ENABLE_SANITIZERS "Enable AddressSanitizer and UndefinedBehaviorSaniti
 add_library(motor_dynamics STATIC
     src/bldc_motor.c
     src/dc_motor.c
+    src/hal/motor_hal.c
     src/six_step_controller.c
 )
 add_library(motorDynamics::motor_dynamics ALIAS motor_dynamics)
@@ -60,6 +61,14 @@ if(MD_BUILD_TESTS)
         $<$<C_COMPILER_ID:GNU,Clang>:-Wall;-Wextra;-Wpedantic;-Werror>
     )
     add_test(NAME six_step_controller_tests COMMAND six_step_controller_tests)
+
+    add_executable(motor_hal_tests tests/test_motor_hal.c)
+    target_link_libraries(motor_hal_tests PRIVATE
+        motorDynamics::motor_dynamics)
+    target_compile_options(motor_hal_tests PRIVATE
+        $<$<C_COMPILER_ID:GNU,Clang>:-Wall;-Wextra;-Wpedantic;-Werror>
+    )
+    add_test(NAME motor_hal_tests COMMAND motor_hal_tests)
 
     add_executable(dc_motor_trace tests/reference/dc_motor_trace.c)
     target_link_libraries(dc_motor_trace PRIVATE
