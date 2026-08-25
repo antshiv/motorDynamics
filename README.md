@@ -6,6 +6,12 @@ reference. The first BLDC model exposes three phase currents, trapezoidal
 back-EMF, electrical angle, electromagnetic torque, and averaged six-step
 inverter voltage vectors.
 
+The portable six-step controller adds explicit phase commands, alignment,
+forced startup, observed commutation, bounded voltage/current operation, and
+latched faults. Hardware-specific PWM, ADC, SPI, and timer code remains outside
+the numerical library so the same contract can target KV31F, KV58, and i.MX
+RT1176 adapters.
+
 ## Accepted model
 
 The first model integrates current, shaft speed, and shaft angle:
@@ -40,6 +46,12 @@ cmake --build build --parallel
 ctest --test-dir build --output-on-failure
 ```
 
+The embedded portability gate can be run with:
+
+```bash
+sh scripts/check_cortex_m4.sh
+```
+
 The native suite checks derivatives, equilibrium, transient convergence,
 power observations, and fail-closed behavior. When `uv` is available, the
 same transient is compared with an independently integrated SciPy oracle.
@@ -56,8 +68,10 @@ same transient is compared with an independently integrated SciPy oracle.
 ## Planned progression
 
 1. Brushed DC motor parameter identification and current/voltage limits.
-2. Replace the accepted averaged six-step vectors with switching/dead-time and
+2. Add BEMF blanking, zero-cross qualification, and commutation advance as a
+   separately tested sensorless observer.
+3. Replace the accepted averaged six-step vectors with switching/dead-time and
    current-limit models.
-3. Clarke/Park transforms and PMSM field-oriented control.
-4. Hall, encoder, and sensorless observers.
-5. Coupled motor-propeller and battery-bus fixtures.
+4. Clarke/Park transforms and PMSM field-oriented control.
+5. Hall and encoder observers.
+6. Coupled motor-propeller and battery-bus fixtures.

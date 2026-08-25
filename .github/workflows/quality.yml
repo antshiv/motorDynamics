@@ -40,3 +40,15 @@ jobs:
           cmake --build build/sanitize --parallel
           ./build/sanitize/motor_dynamics_tests
           ./build/sanitize/bldc_motor_tests
+          ./build/sanitize/six_step_controller_tests
+
+  cortex-m4-compile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Arm GNU toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-arm-none-eabi
+      - name: Compile the portable C boundary for Cortex-M4
+        run: sh scripts/check_cortex_m4.sh
