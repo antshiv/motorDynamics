@@ -11,7 +11,8 @@ typedef enum {
     MD_STATUS_INVALID_ARGUMENT,
     MD_STATUS_INVALID_CONFIG,
     MD_STATUS_NUMERICAL_FAILURE,
-    MD_STATUS_SINGULAR_MODEL
+    MD_STATUS_SINGULAR_MODEL,
+    MD_STATUS_HARDWARE_FAILURE
 } md_status_t;
 
 /* SI units are mandatory throughout this ABI. */
